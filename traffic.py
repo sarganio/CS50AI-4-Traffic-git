@@ -74,8 +74,23 @@ def get_model():
     `input_shape` of the first layer is `(IMG_WIDTH, IMG_HEIGHT, 3)`.
     The output layer should have `NUM_CATEGORIES` units, one for each category.
     """
-    raise NotImplementedError
+    model = tf.keras.models.Sequential([tf.keras.layers.Lambda(
+        lambda x: tf.image.rgb_to_grayscale(x), input_shape=(IMG_WIDTH, IMG_HEIGHT, 3)),    ])
+    model.add(tf.keras.layers.Conv2D(32, (3, 3), activation='relu', input_shape=(IMG_WIDTH, IMG_HEIGHT, 1)))
+    model.add(tf.keras.layers.MaxPooling2D(pool_size=(2, 2), strides=2))
+    # Flatten units
+    model.add(tf.keras.layers.Conv2D(32, (3, 3), activation='relu'))
+        # Add a hidden layer with dropout
+    model.add(tf.keras.layers.MaxPooling2D(pool_size=(2, 2), strides=2))
+    model.add(tf.keras.layers.Dense(128, activation="relu"))
+    model.add(tf.keras.layers.Flatten())
+    model.add(tf.keras.layers.Dropout(TEST_SIZE))
+    # Add an output layer with output units for all 10 digits
+    model.add(tf.keras.layers.Dense(NUM_CATEGORIES, activation="softmax"))
 
+
+    model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
+    return model
 
 if __name__ == "__main__":
     main()
