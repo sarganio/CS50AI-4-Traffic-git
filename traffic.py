@@ -61,7 +61,7 @@ def load_data(data_dir):
     images = list()
     lables = list()
     for category in os.scandir(data_dir):
-        for imageFile in  os.scandir(os.path.join(data_dir, category.name)):
+        for imageFile in os.scandir(os.path.join(data_dir, category.name)):
             # set the labe as the name of the directory
             lables.append(int(category.name))
             images.append(cv2.resize(cv2.imread(imageFile.path), (IMG_WIDTH, IMG_HEIGHT)))
@@ -75,12 +75,13 @@ def get_model():
     The output layer should have `NUM_CATEGORIES` units, one for each category.
     """
     model = tf.keras.models.Sequential([tf.keras.layers.Lambda(
-        lambda x: tf.image.rgb_to_grayscale(x), input_shape=(IMG_WIDTH, IMG_HEIGHT, 3)),    ])
-    model.add(tf.keras.layers.Conv2D(32, (3, 3), activation='relu', input_shape=(IMG_WIDTH, IMG_HEIGHT, 1)))
+        lambda x: tf.image.rgb_to_grayscale(x), input_shape=(IMG_WIDTH, IMG_HEIGHT, 3)),])
+    model.add(tf.keras.layers.Conv2D(32, (3, 3), activation='relu',
+                                      input_shape=(IMG_WIDTH, IMG_HEIGHT, 1)))
     model.add(tf.keras.layers.MaxPooling2D(pool_size=(2, 2), strides=2))
     # Flatten units
     model.add(tf.keras.layers.Conv2D(32, (3, 3), activation='relu'))
-        # Add a hidden layer with dropout
+    # Add a hidden layer with dropout
     model.add(tf.keras.layers.MaxPooling2D(pool_size=(2, 2), strides=2))
     model.add(tf.keras.layers.Dense(128, activation="relu"))
     model.add(tf.keras.layers.Flatten())
@@ -88,9 +89,9 @@ def get_model():
     # Add an output layer with output units for all 10 digits
     model.add(tf.keras.layers.Dense(NUM_CATEGORIES, activation="softmax"))
 
-
     model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
     return model
+
 
 if __name__ == "__main__":
     main()
