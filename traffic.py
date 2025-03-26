@@ -62,10 +62,9 @@ def load_data(data_dir):
     lables = list()
     for category in os.scandir(data_dir):
         for imageFile in  os.scandir(data_dir +"\\"+ category.name):
-            print(cv2.imread(imageFile.path))
             # set the labe as the name of the directory
             lables.append(int(category.name))
-            images.append(cv2.imread(imageFile.path))
+            images.append(cv2.resize(cv2.imread(imageFile.path), (IMG_WIDTH, IMG_HEIGHT)))
     return (images, lables)
 
 
